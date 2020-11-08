@@ -12,6 +12,6 @@ const app = express();
 app.use('/api/user', user);
 
 
-app.lisen(config.port, function(){
+app.listen(config.port, function(){
     console.info(`Api escuchando en el puerto ${config.host}:${config.port}`);
 });

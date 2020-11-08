@@ -1,9 +1,12 @@
 const express = require('express');
-
 const router = express.Router();
 
+const response = require('../../network/response.js');
+const controller = require('./controller.js');
+
 router.get('/', function(req, res){
-    res.send('Todo funciona ok')
+    const list = controller.list();
+    response.success(req, res, list, 200);
 });
 
 module.exports = router;
