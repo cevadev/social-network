@@ -1,4 +1,10 @@
-const nanoid = require('nanoid');
+const { nanoid } = require('nanoid');
+/**
+ * ../auth -> significa que no vamos a llamar ni al controlador, llamamos al index y es el index
+ * quien se encargara de inyectar cual es el almacenamiento de produccion
+ */
+const auth = require('../auth');
+
 const TABLE = 'user';
 
 /** exportamos un funcion que trabaje con el store inyectado y no con el definido en el archivo */
@@ -19,9 +25,13 @@ module.exports = function(injectedStore){
         return store.get(TABLE, id);
     }
 
+    /**
+     * creamos un auth cada vez que creamos un nuevo user
+     */
     async function upsert(body){
         const user = {
-            name: body.name
+            name: body.name,
+            username: body.username
         }
 
         if(body.id){
@@ -29,6 +39,18 @@ module.exports = function(injectedStore){
         }
         else{
             user.id = nanoid();
+        }
+
+        /**1. validamos si hay una contraseña, ya que estamos creando un nuevo user
+         * 2. si editamos un user cambiando la contraseña, debemos actualizar la contraseña
+         * 3. si editamos un user cambiando el username, debemos actualizar el username
+         */
+        if(body.password || body.username){
+            await auth.upsert({
+                id: user.id,
+                username: user.username,
+                password: body.password
+            })
         }
 
         return store.upsert(TABLE, user);
