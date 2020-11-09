@@ -10,7 +10,7 @@ const db = {
 
 //definimos list como funcion asincrona que devuelve a tomaticamente una promesa
 async function list(table){
-    return db[table];
+    return db[table] || [];
 }
 
 async function get(table, id){
@@ -28,6 +28,14 @@ async function upsert(table, data){
     console.info(db);
 }
 
+async function query(table, sql){
+    let collection = await list(table);
+    let keys = Object.keys(sql);
+    let key = keys[0];
+    //filtramos cada uno de los items de la coleccion mientras  item.username === sql.username
+    return collection.find(item => item[key] === sql[key]) || null;
+}
+
 async function remove(table, id){
    return true;
 }
@@ -37,4 +45,5 @@ module.exports = {
     get,
     upsert,
     remove,
+    query,
 }

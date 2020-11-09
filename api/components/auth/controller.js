@@ -8,6 +8,16 @@ module.exports = function(injectedStore){
         store = require('../../../store/dummy.js');
     }
 
+    async function login(username, password){
+        /**
+         * definimos donde esta la data que tenemos
+         * el query trae los datos de TABLE donde elcampo username === al parametro username
+         */
+        const data = await store.query(TABLE, { username: username});
+        return data;
+    }
+
+    //creamos las sesiones
     function upsert(data){
         const authData = {
             //el id de los datos de autenticacion sera igual al id del usuario 
@@ -28,5 +38,6 @@ module.exports = function(injectedStore){
 
     return {
         upsert,
+        login,
     }
 }
