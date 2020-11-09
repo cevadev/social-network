@@ -1,3 +1,5 @@
+const auth = require('../../../auth/index.js');
+
 const TABLE = 'auth';
 
 //entidad de autenticacion
@@ -14,7 +16,13 @@ module.exports = function(injectedStore){
          * el query trae los datos de TABLE donde elcampo username === al parametro username
          */
         const data = await store.query(TABLE, { username: username});
-        return data;
+        if(data.password === password){
+            //generamos token, haciendo firmar la data que viene del usuario
+            return auth.sign(data);
+        }
+        else{
+            throw new Error('Invalid information');
+        }
     }
 
     //creamos las sesiones
