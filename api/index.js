@@ -3,7 +3,7 @@ const express = require('express');
 const config = require('../config.js');
 
 
-const user = require('../components/user/network.js');
+const user = require('./components/user/network.js');
 
 //inicializamos nuestra app
 const app = express();

@@ -6,7 +6,7 @@ module.exports = function(injectedStore){
 
     let store = injectedStore;
         if(!store){
-            store = require('../../store/dummy.js');
+            store = require('../../../store/dummy.js');
         }
     
     //nuestra funcion list() ahora trabaja con el store inyectado
