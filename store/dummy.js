@@ -2,28 +2,34 @@
 
 const db = {
     "user": [
-        {id: 1, name: 'Alberto'},
-        {id: 2, name: 'José'},
-        {id: 3, name: 'Fernando'}
+        {id: '1', name: 'Alberto'},
+        {id: '2', name: 'José'},
+        {id: '3', name: 'Fernando'}
     ]
 };
 
-function list(table){
+//definimos list como funcion asincrona que devuelve a tomaticamente una promesa
+async function list(table){
     return db[table];
 }
 
-function get(table, id){
-    let collection = list(table);
+async function get(table, id){
+    let collection = await list(table);
     return collection.find(item => item.id === id) || null;
 }
 
 /**insertamos datos si no existen o los modificamos si existen */
-function upsert(table, data){
-    db[collection].push(data);
+async function upsert(table, data){
+    if(!db[table]){
+        db[table] = [];
+    }
+
+    db[table].push(data);
+    console.info(db);
 }
 
-function remove(table, id){
-    return true;
+async function remove(table, id){
+   return true;
 }
 
 module.exports = {
