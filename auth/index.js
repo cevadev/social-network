@@ -33,13 +33,13 @@ const check = {
 
 function getToken(auth){
     if(!auth){
-        throw new Error('token not found');
+        throw error('token not found', 401);
     }
 
     //nos aseguramos formato del token correcto (el token debe iniciar con Bearer si no es asi error)
     if(auth.indexOf('Bearer') === -1)//no encuentra Bearer en el token
     {
-        throw new Error('Token format invalid');
+        throw error('Token format invalid', 401);
     }
 
     //reemplazamos el texto Bearer que viene dentro del token que no nos sirve

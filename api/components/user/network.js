@@ -15,38 +15,43 @@ router.post('/', upsert);
 router.put('/', secure('update'), upsert);
 
 //Internal functions
-function list(req, res){
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next Hemos añadido un middleware en utils/erros.js todos los errores que creamos en el catch
+ * utilizamos la funcion  next() que viene dentro de todos los middleware de express y asi automaticamente 
+ * no tenemos que gestionar los errores dentro de la ruta sino automaticamente
+ */
+function list(req, res, next){
     //nos viene una promesa
     Controller.list()
         .then((list)=>{
             response.success(req, res, list, 200);
         })
-        .catch((error)=>{
-            response.error(req, res, error.message, 500 );
-        });
+        .catch(next);
+        /* .catch((error)=>{
+            response.error(req, res, error, 400);
+        }) */
 }
 
-function get(req, res){
+function get(req, res, next){
     Controller.get(req.params.id)
         .then((user)=>{
             response.success(req, res, user, 200);
         })
-        .catch((error)=>{
-            response.error(req, res, error.message, 500);
-        })
+        .catch(next);
 
     /* const user = Controller.get(req.params.id);
     response.success(req, res, user, 200); */
 }
 
-function upsert(req, res){
+function upsert(req, res, next){
     Controller.upsert(req.body)
         .then((user)=>{
             response.success(req, res, user, 201);
         })
-        .catch((error)=>{
-            response.error(req, res, error, 500);
-        })
+        .catch(next);
 }
 
 module.exports = router;

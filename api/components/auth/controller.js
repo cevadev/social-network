@@ -8,7 +8,7 @@ const TABLE = 'auth';
 module.exports = function(injectedStore){
     let store = injectedStore;
     if(!store){
-        store = require('../../../store/dummy.js');
+        store = require('../../../store/mysql.js');
     }
 
     async function login(username, password){
