@@ -1,4 +1,5 @@
 const auth = require('../../../auth/index.js');
+const bcrypt = require('bcrypt');
 
 const TABLE = 'auth';
 
@@ -16,17 +17,30 @@ module.exports = function(injectedStore){
          * el query trae los datos de TABLE donde elcampo username === al parametro username
          */
         const data = await store.query(TABLE, { username: username});
-        if(data.password === password){
+
+        //compraracion de los hash
+        return bcrypt.compare(password, data.password)
+            .then((sonIguales)=>{
+                if(sonIguales === true){
+                    //Generar token
+                    return auth.sign(data);
+                }
+                else{
+                    throw new Error('Invalid information');
+                }
+            })
+
+        /* if(data.password === password){
             //generamos token, haciendo firmar la data que viene del usuario
             return auth.sign(data);
         }
         else{
             throw new Error('Invalid information');
-        }
+        } */
     }
 
     //creamos las sesiones
-    function upsert(data){
+    async function upsert(data){
         const authData = {
             //el id de los datos de autenticacion sera igual al id del usuario 
             id: data.id
@@ -38,7 +52,8 @@ module.exports = function(injectedStore){
         }
 
         if(data.password){
-            authData.password = data.password;
+            //encriptamos el password
+            authData.password = await bcrypt.hash(data.password, 5);
         }
 
         return store.upsert(TABLE, authData);
