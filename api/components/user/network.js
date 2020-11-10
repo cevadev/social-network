@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+//Traemos el middleware secure o intermediario que realiza la comprobacion si el user puede hacer la operacion
+const secure = require('./secure.js');
 const response = require('../../../network/response.js');
 //index.js
 const Controller = require('./index.js');
@@ -9,7 +11,8 @@ const Controller = require('./index.js');
 router.get('/', list);
 router.get('/:id', get);
 router.post('/', upsert);
-router.put('/', upsert);
+//decimos que el middleware secure cumple las peticiones de update
+router.put('/', secure('update'), upsert);
 
 //Internal functions
 function list(req, res){

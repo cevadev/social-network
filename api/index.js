@@ -7,6 +7,7 @@ const swaggerUI = require('swagger-ui-express');
 
 const user = require('./components/user/network.js');
 const auth = require('./components/auth/network.js');
+const errors = require('../network/errors.js');
 //inicializamos nuestra app
 const app = express();
 
@@ -25,6 +26,9 @@ const swaggerDoc = require('./swagger.json');
 
 //ruta para la visualizacion de la documentacion de nuestra api
 app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
+
+//pasamos nuestro middleware errores a nuestra app express. es importante que sea el ultimo app.use()
+app.use(errors);
 
 
 app.listen(config.port, function(){

@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 
 const config = require('../config.js');
+const error = require('../utils/errors.js');
 
 /**
  * funcion para firmar el token
@@ -21,6 +22,12 @@ const check = {
         //realizamos la comprobacion
         const decoded = decodeHeader(req);
         console.log(decoded);
+
+        //COMPROBAMOS SI EL USUARIO PUEDE REALIZAR LA OPERACION 
+        //decoded.id -> id del user
+        if(decoded.id !== owner){
+            throw error('You can not do this operation', 401);
+        }
     }
 }
 
@@ -37,6 +44,7 @@ function getToken(auth){
 
     //reemplazamos el texto Bearer que viene dentro del token que no nos sirve
     let token = auth.replace('Bearer ', '');
+    return token.trim();
 }
 
 //decodificamos el token

@@ -11,6 +11,8 @@ module.exports = function checkAuth(action){
                 let owner = req.body.id;
                 //la funcion own verifica que el usuario que generó el token es el mismo usuario que queremos comprobar
                 auth.check.own(req, owner);
+                //si no lanzó error ejecutamos next()
+                next();
                 break;
             default:
                 next();
