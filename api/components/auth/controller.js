@@ -23,7 +23,7 @@ module.exports = function(injectedStore){
             .then((sonIguales)=>{
                 if(sonIguales === true){
                     //Generar token
-                    return auth.sign(data);
+                    return auth.sign(JSON.parse(JSON.stringify(data)));
                 }
                 else{
                     throw new Error('Invalid information');

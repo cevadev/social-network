@@ -14,6 +14,12 @@ module.exports = function checkAuth(action){
                 //si no lanzó error ejecutamos next()
                 next();
                 break;
+            
+            case 'follow':
+                auth.check.logged(req);
+                next();
+                break;
+
             default:
                 next();
         }

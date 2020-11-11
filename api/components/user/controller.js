@@ -56,6 +56,13 @@ module.exports = function(injectedStore){
         return store.upsert(TABLE, user);
     }
 
+    function follow(from, to){
+        return store.upsert(`${TABLE}_follow`, {
+            user_from: from,
+            user_to: to
+        });
+    }
+
     async function remove(id){
         return store.remove(TABLE, id);
     }
@@ -65,6 +72,7 @@ module.exports = function(injectedStore){
         list,
         get,
         upsert,
+        follow,
         remove,
     };
 }

@@ -48,8 +48,86 @@ function list(table){
     });
 }
 
+function get(table, id){
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM ${table} WHERE id = ${id}`, function(error, data){
+            if(error){
+                return reject(error);
+            }
+            resolve(data);
+        });
+    });
+}
+
+//si es un nuevo id lo inserta, si ya existe actualiza la informacion
+function insert(table, data){
+    return new Promise((resolve, reject)=>{
+        connection.query(`INSERT INTO ${table} SET ?`, data, function(error, result){
+            if(error){
+                return reject(error);
+            }
+            resolve(result);
+        });
+    });
+}
+
+const update = (table, data)=>{
+    return new Promise((resolve, reject)=>{
+        connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, data.id], function(error, result){
+            if(error){
+                return reject(error);
+            }
+            resolve(result);
+        });
+    });
+}
+
+function query(table, query){
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM ${table} WHERE ?`, query, function(error, result){
+            if(error){
+                return reject(error);
+            }
+            resolve(result[0] || null);
+        });
+    });
+}
+
+async function upsert(table, data){
+    if(data && data.id){
+        return update(table, data);
+    }
+    else{
+        return insert(table, data);
+    }
+
+    /* return new Promise((resolve, reject)=>{
+        console.info(`Data to be upserted: ${data}`);
+        connection.query(`INSERT INTO ${table} SET ? ON DUPLICATE KEY UPDATE ?`, [data, data], function(error, result){
+            console.info("Upserted data: ", result);
+            console.info("Update table: ", table);
+            if(error){
+                return reject(error);
+            }
+            resolve(result);
+        });
+    }); */
+
+    /* const row = await get(table, data.id);
+    console.info("row: ", row);
+    if(row.length === 0){
+        return insert(table, data);
+    }
+    else{
+        return update(table, data);
+    } */
+}
+
 handleConnection();
 
 module.exports = {
     list,
+    get,
+    upsert,
+    query,
 }

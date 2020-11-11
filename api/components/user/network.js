@@ -11,7 +11,9 @@ const Controller = require('./index.js');
 router.get('/', list);
 router.get('/:id', get);
 router.post('/', upsert);
-//decimos que el middleware secure cumple las peticiones de update
+//secure('follow') para asegurarnos que lo puede hacer un unico usuario
+router.post('/follow/:id', secure('follow'), follow);
+//decimos que el middleware secure se encarga que el update lo haga un unico uuario y sobre su data
 router.put('/', secure('update'), upsert);
 
 //Internal functions
@@ -50,6 +52,18 @@ function upsert(req, res, next){
     Controller.upsert(req.body)
         .then((user)=>{
             response.success(req, res, user, 201);
+        })
+        .catch(next);
+}
+
+function follow(req, res, next){
+    /**
+     * req.user.id -> id del usuario que quiere seguir a alguien (from)
+     * req.params.id -> id del usuario a ser seguido (to)
+     */
+    Controller.follow(req.user.id, req.params.id)
+        .then((data)=>{
+            response.success(req, res, data, 201);
         })
         .catch(next);
 }
