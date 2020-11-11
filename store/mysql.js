@@ -50,7 +50,7 @@ function list(table){
 
 function get(table, id){
     return new Promise((resolve, reject)=>{
-        connection.query(`SELECT * FROM ${table} WHERE id = ${id}`, function(error, data){
+        connection.query(`SELECT * FROM ${table} WHERE id = '${id}'`, function(error, data){
             if(error){
                 return reject(error);
             }
@@ -82,9 +82,16 @@ const update = (table, data)=>{
     });
 }
 
-function query(table, query){
+function query(table, query, join){
+    let joinQuery = '';
+    if(join){
+        const key = Object.keys(join)[0];
+        const val = join[key];
+        joinQuery = `JOIN ${key} ON ${table}.${val} = ${key}.id`;
+    }
+
     return new Promise((resolve, reject)=>{
-        connection.query(`SELECT * FROM ${table} WHERE ?`, query, function(error, result){
+        connection.query(`SELECT * FROM ${table} ${joinQuery} WHERE ${table}.?`, query, function(error, result){
             if(error){
                 return reject(error);
             }
@@ -94,13 +101,13 @@ function query(table, query){
 }
 
 async function upsert(table, data){
-    if(data && data.id){
+   /*  if(data && data.id){
         return update(table, data);
     }
     else{
         return insert(table, data);
     }
-
+ */
     /* return new Promise((resolve, reject)=>{
         console.info(`Data to be upserted: ${data}`);
         connection.query(`INSERT INTO ${table} SET ? ON DUPLICATE KEY UPDATE ?`, [data, data], function(error, result){
@@ -112,15 +119,17 @@ async function upsert(table, data){
             resolve(result);
         });
     }); */
-
-    /* const row = await get(table, data.id);
-    console.info("row: ", row);
+    let row = [];
+    if(data.id){
+        row = await get(table, data.id);
+    }
+    
     if(row.length === 0){
         return insert(table, data);
     }
     else{
         return update(table, data);
-    } */
+    }
 }
 
 handleConnection();

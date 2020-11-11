@@ -13,6 +13,7 @@ router.get('/:id', get);
 router.post('/', upsert);
 //secure('follow') para asegurarnos que lo puede hacer un unico usuario
 router.post('/follow/:id', secure('follow'), follow);
+router.get('/:id/following', following);
 //decimos que el middleware secure se encarga que el update lo haga un unico uuario y sobre su data
 router.put('/', secure('update'), upsert);
 
@@ -64,6 +65,15 @@ function follow(req, res, next){
     Controller.follow(req.user.id, req.params.id)
         .then((data)=>{
             response.success(req, res, data, 201);
+        })
+        .catch(next);
+}
+
+/**funcion que nos muestra los usuarios que siguen un usuario */
+function following(req, res, next){
+    return Controller.following(req.params.id)
+        .then((data)=>{
+            return response.success(req, res, data, 200);
         })
         .catch(next);
 }
