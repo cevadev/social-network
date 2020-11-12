@@ -14,7 +14,9 @@ const config = {
     mysqlDataBase: process.env.MYSQL_DATABASE || 'nodedb',
     secret: process.env.SECRET || 'notasecret',
 
-     mysqlServicePort: process.env.MYSQL_SERVICE_PORT || '3001',
+    //mysqlService
+    mysqlServiceHost: process.env.MYSQL_SERVICE_HOST || 'localhost',
+    mysqlServicePort: process.env.MYSQL_SERVICE_PORT || '3001',
 };
 
 module.exports = config;
