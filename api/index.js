@@ -7,7 +7,6 @@ const swaggerUI = require('swagger-ui-express');
 
 const user = require('./components/user/network.js');
 const auth = require('./components/auth/network.js');
-const post = require('./components/post/network.js');
 
 const errors = require('../network/errors');
 //inicializamos nuestra app
@@ -24,9 +23,6 @@ app.use('/api/user', user);
 
 /*todos los pedidos http://localhost:3000/api/auth lo procesará el componente auth */
 app.use('/api/auth', auth);
-
-/*todos los pedidos http://localhost:3030/api/post lo procesará el componente post */
-app.use('/api/post', post);
 
 //llamamos a nuestra documentacion hecha por swagger
 const swaggerDoc = require('./swagger.json');
