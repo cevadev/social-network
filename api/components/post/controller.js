@@ -1,20 +1,71 @@
-const TABLE = 'post';
+const { nanoid } = require('nanoid');
+const error = require('../../../utils/errors.js');
 
-/** exportamos un funcion que trabaje con el store inyectado y no con el definido en el archivo */
+const COLLECTION = 'post';
+
+/** exportamos un funcion que trabaje con el Store inyectado y no con el definido en el archivo */
 module.exports = function(injectedStore){
 
-    let store = injectedStore;
-        if(!store){
-            store = require('../../../store/mysql.js');
+    let Store = injectedStore;
+        if(!Store){
+            Store = require('../../../Store/mysql.js');
         }
     
-    //nuestra funcion list() ahora trabaja con el store inyectado
-    async function list(){
+    //nuestra funcion list() ahora trabaja con el Store inyectado
+    async function list(query){
         //retornamos los usuarios
-        return store.list(TABLE);
+        return Store.list(COLLECTION);
     }
+
+    async function get(id) {
+		const user = await Store.get(COLLECTION, id);
+		if (!user) {
+			throw error('No existe el post', 404);
+		}
+
+		return user;
+    }
+    
+    async function upsert(data, user) {
+		const post = {
+			id: data.id,
+			user: user,
+			text: data.text,
+		}
+
+		if (!post.id) {
+			post.id = nanoid();
+		}
+
+        return Store.upsert(COLLECTION, post)
+            .then(() => post);
+    }
+    
+    async function like(post, user) {
+        const like = await Store.upsert(COLLECTION + '_like', {
+            post: post,
+            user: user,
+        });
+
+        return like;
+	}
+
+	async function postsLiked(user) {
+		const users = await Store.query(COLLECTION + '_like', { user: user }, {post: post});
+		return users;
+	}
+
+	async function postLikers(post) {
+		const users = await Store.query(COLLECTION + '_like', { post: post }, {post: post});
+		return users;
+	}
 
     return{
         list,
+        get,
+        upsert,
+        like,
+        postsLiked,
+        postLikers,
     }
 }
