@@ -12,7 +12,9 @@ const config = {
     mysqlUser: process.env.MYSQL_USER || 'root',
     mysqlpassword: process.env.MYSQL_PASSWORD || 'admin',
     mysqlDataBase: process.env.MYSQL_DATABASE || 'nodedb',
-    secret: process.env.SECRET || 'notasecret'
+    secret: process.env.SECRET || 'notasecret',
+
+     mysqlServicePort: process.env.MYSQL_SERVICE_PORT || '3001',
 };
 
 module.exports = config;
