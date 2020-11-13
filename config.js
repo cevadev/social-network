@@ -7,7 +7,7 @@ const config = {
     filesRoute: process.env.FILES_ROUTE || 'files', */
     host: process.env.HOST || 'http://localhost',
     port: process.env.PORT || 3000,
-    mysqlHost: process.env.MYSQL_HOST || '127.0.0.1',
+    mysqlHost: process.env.MYSQL_HOST || '',
     mysqPort: process.env.MYSQL_PORT || '3306',
     mysqlUser: process.env.MYSQL_USER || 'root',
     mysqlpassword: process.env.MYSQL_PASSWORD || 'admin',

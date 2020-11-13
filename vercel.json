@@ -1,5 +1,8 @@
 {
     "version": 2,
+    "env": {
+        "MYSQL_HOST": "127.0.0.1"
+    },
     "builds": [
         {
             "src": "api/index.js",
