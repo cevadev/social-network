@@ -21,6 +21,9 @@ const config = {
 
     //post
     postPort: process.env.POST_PORT || '3002',
+
+    //remoteDB
+    remoteDB: process.env.REMOTE_DB || false
 };
 
 module.exports = config;
