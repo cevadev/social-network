@@ -1,7 +1,7 @@
 {
     "version": 2,
     "env": {
-        "mysqlHost": "127.0.0.1"
+        "MYSQL_HOST": "localhost"
     },
     "builds": [
         {
