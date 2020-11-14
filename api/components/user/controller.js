@@ -7,18 +7,34 @@ const auth = require('../auth');
 
 const TABLE = 'user';
 
-/** exportamos un funcion que trabaje con el store inyectado y no con el definido en el archivo */
-module.exports = function(injectedStore){
-
+/** exportamos un funcion que trabaje con el store inyectado e inyectamos el cache y no con el definido en el archivo */
+module.exports = function(injectedStore, injectedCache){
+    let cache = injectedCache;
     let store = injectedStore;
         if(!store){
-            store = require('../../../store/mysql.js');
+            store = require('../../../store/dummy.js');
+        }
+
+        if(!cache){
+            cache = require('../../../store/dummy.js');
         }
     
-    //nuestra funcion list() ahora trabaja con el store inyectado
+    //nuestra funcion list() ahora trabaja con el store y cache inyectado
     async function list(){
-        //retornamos los usuarios
-        return store.list(TABLE);
+        //estrategia de cache: primero si está en el cache recuperar y si no está traer la info desde la BD
+        let users = await cache.list(TABLE); //preguntamos a la bd en cache si tiene la tabla
+        //si no hay usuarios en cache
+        if(!users){
+            console.info('There is no data in cache, getting data from Database');
+            //retornamos los usuarios desde la BD
+            users = await store.list(TABLE);
+            //ponemos en el cache los users
+            cache.upsert(TABLE, users);
+        }
+        else{
+            console.info('Traemos datos del cache');
+        }
+        return users;
     }
     
     async function get(id){
